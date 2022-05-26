@@ -13,6 +13,7 @@ const userInfo = (user) => {
   })
     .then((res) => {
       /*  console.log(res.data); */
+
       return res.data;
     })
     .catch((err) => {
@@ -41,6 +42,7 @@ const Dashboard = () => {
   const [users, setUser] = useState([]);
   const navigate = useNavigate();
   const Token = useSelector((state) => state.Auth.User);
+
   useEffect(() => {
     if (!Token) {
       navigate("/Signin");
