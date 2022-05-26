@@ -1,4 +1,5 @@
 import { Route, Routes, Navigate } from "react-router";
+import { useSelector } from "react-redux";
 import ROUTES from "./config/routes";
 import {
   Dashboard,
@@ -11,7 +12,8 @@ import {
 } from "./page";
 
 function RoutesLib() {
-  const isAuthentication = false;
+  const Token = useSelector((state) => state.Auth.User);
+  const isAuthentication = Token ? Token : false;
 
   return (
     <Routes>

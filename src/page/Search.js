@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import UserCard from "../components/UserCard";
 
 const userInfo = (user) => {
@@ -34,11 +36,13 @@ const fetchData = (keyWord, amoutOfUsers) => {
       console.log(err);
     });
 };
+
 const Search = () => {
   const [users, setUsers] = useState([]);
   const [amoutOfUsers, SetAmoutOfUsers] = useState(1);
   const [loading, setloading] = useState(false);
   const [noUser, setNoUser] = useState(false);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setUsers([]);
@@ -60,6 +64,14 @@ const Search = () => {
       });
     });
   };
+  const navigate = useNavigate();
+  const Token = useSelector((state) => state.Auth.User);
+
+  useEffect(() => {
+    if (!Token) {
+      navigate("/Signin");
+    }
+  }, []);
 
   return (
     <div className="container ">

@@ -1,24 +1,64 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import TextField from "@mui/material/TextField";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import axios from "axios";
 
 const SignUp = () => {
+  const navigate = useNavigate();
+
   const {
-    register,
     handleSubmit,
-    watch,
     control,
     formState: { errors },
   } = useForm();
 
-  const submitHandler = ({ username, password }) => {
-    console.log(username, password);
+  const submitHandler = ({
+    username,
+    firstName,
+    lastName,
+    email,
+    birthDate,
+    password,
+    confirmpassword,
+  }) => {
+    if (password === confirmpassword) {
+      axios({
+        method: "POST",
+        url: `${process.env.REACT_APP_AUTH_URL}/auth/signup`,
+        data: {
+          username,
+          firstName,
+          lastName,
+          email,
+          birthDate,
+          password,
+        },
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => {
+          navigate("/Signin");
+          window.alert("Success...");
+          console.log(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      window.alert("Please Confirmpassword...");
+    }
   };
 
-  const navigate = useNavigate();
-
+  const User = useSelector((state) => state.Auth.User);
+  console.log(User);
+  useEffect(() => {
+    if (User) {
+      navigate("/Dashboard");
+    }
+  }, []);
   return (
     <div className="container pt-4 h-75">
       <div className="d-flex justify-content-center align-item-center h-100">
@@ -26,9 +66,9 @@ const SignUp = () => {
           className=" d-flex flex-column gap-3 justify-content-center align-item-center "
           onSubmit={handleSubmit(submitHandler)}
         >
-          {/*Fullname */}
+          {/*userName */}
           <Controller
-            name="fullName"
+            name="username"
             control={control}
             defaultValue=""
             rules={{
@@ -37,43 +77,126 @@ const SignUp = () => {
             }}
             render={({ field }) => (
               <TextField
-                id="fullname"
-                label="FullName"
+                id="username"
+                label="Username"
                 variant="outlined"
                 inputProps={{ type: "text" }}
-                error={Boolean(errors.fullName)}
+                error={Boolean(errors.username)}
                 helperText={
-                  errors.fullName
-                    ? errors.fullName.type === "maxLength" ||
-                      errors.fullName.type === "minLength"
-                      ? "Fullname must contain between 3 and 12 letters or numbers."
-                      : "Fullname is required"
+                  errors.username
+                    ? errors.username.type === "maxLength" ||
+                      errors.username.type === "minLength"
+                      ? "username must contain between 3 and 12 letters or numbers."
+                      : "username is required"
                     : ""
                 }
                 {...field}
               ></TextField>
             )}
           ></Controller>
-          {/*  Age */}
+          {/* firstName */}
           <Controller
-            name="phoneNumber"
+            name="firstName"
             control={control}
             defaultValue=""
             rules={{
               required: true,
-              maxLength: 20,
               minLength: 4,
             }}
             render={({ field }) => (
               <TextField
-                id="number"
-                label="Number"
+                id="firstName"
+                label="FirstName"
                 variant="outlined"
                 inputProps={{ type: "text" }}
-                error={Boolean(errors.number)}
-                helperText={errors.number ? "number is required" : ""}
+                error={Boolean(errors.firstName)}
+                helperText={
+                  errors.firstName
+                    ? errors.firstName.type === "maxLength" ||
+                      errors.firstName.type === "minLength"
+                      ? "firstName must contain between 3 and 12 letters or numbers."
+                      : "firstName is required"
+                    : ""
+                }
                 {...field}
               ></TextField>
+            )}
+          ></Controller>
+          {/*lastName*/}
+          <Controller
+            name="lastName"
+            control={control}
+            defaultValue=""
+            rules={{
+              required: true,
+              minLength: 4,
+            }}
+            render={({ field }) => (
+              <TextField
+                id="lastName"
+                label="lastName"
+                variant="outlined"
+                inputProps={{ type: "text" }}
+                error={Boolean(errors.lastName)}
+                helperText={
+                  errors.lastName
+                    ? errors.lastName.type === "maxLength" ||
+                      errors.lastName.type === "minLength"
+                      ? "lastName must contain between 3 and 12 letters or numbers."
+                      : "lastName is required"
+                    : ""
+                }
+                {...field}
+              ></TextField>
+            )}
+          ></Controller>
+          {/* email */}
+          <Controller
+            name="email"
+            control={control}
+            defaultValue=""
+            rules={{
+              required: true,
+              minLength: 4,
+            }}
+            render={({ field }) => (
+              <TextField
+                id="email"
+                label="email"
+                variant="outlined"
+                inputProps={{ type: "text" }}
+                error={Boolean(errors.email)}
+                helperText={
+                  errors.email
+                    ? errors.email.type === "maxLength" ||
+                      errors.email.type === "minLength"
+                      ? "email must contain between 3 and 12 letters or numbers."
+                      : "email is required"
+                    : ""
+                }
+                {...field}
+              ></TextField>
+            )}
+          ></Controller>
+          {/* birthDate */}
+          <Controller
+            name="birthDate"
+            control={control}
+            defaultValue=""
+            rules={{
+              required: true,
+              minLength: 4,
+            }}
+            render={({ field }) => (
+              <label htmlFor="birthDate">
+                <input
+                  name="birthDate"
+                  id="birthDate"
+                  type="date"
+                  value=""
+                  {...field}
+                />
+              </label>
             )}
           ></Controller>
           {/*password*/}
@@ -102,7 +225,9 @@ const SignUp = () => {
                     : ""
                 }
                 {...field}
-              ></TextField>
+              >
+                {" "}
+              </TextField>
             )}
           ></Controller>
           {/*confrim password */}

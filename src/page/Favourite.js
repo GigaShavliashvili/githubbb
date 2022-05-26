@@ -1,10 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import UserCard from "../components/UserCard";
 const Favourite = () => {
   const favList = useSelector((state) => state.Fav.favourite);
 
-  console.log(favList);
+  const navigate = useNavigate();
+  const Token = useSelector((state) => state.Auth.User);
+
+  useEffect(() => {
+    if (!Token) {
+      navigate("/Signin");
+    }
+  }, []);
   return (
     <div className="container">
       <div className="row justify-content-center">

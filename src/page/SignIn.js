@@ -1,22 +1,51 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import TextField from "@mui/material/TextField";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { userAuth } from "../redux/action";
 import axios from "axios";
 const SignIn = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const {
-    register,
     handleSubmit,
-    watch,
     control,
     formState: { errors },
   } = useForm();
 
   const submitHandler = ({ username, password }) => {
     console.log(username, password);
+    axios({
+      method: "POST",
+      url: `${process.env.REACT_APP_AUTH_URL}/auth/signin`,
+      data: {
+        username,
+        password,
+      },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => {
+        dispatch(userAuth(res.data));
+        navigate("/Dashboard");
+        window.alert("Success...");
+        console.log(res);
+      })
+      .catch((err) => {
+        window.alert("User dont find or Password is not correct");
+      });
   };
 
-  const navigate = useNavigate();
+  const User = useSelector((state) => state.Auth.User);
+  console.log(User);
+  useEffect(() => {
+    if (User) {
+      navigate("/Dashboard");
+    }
+  }, []);
 
   return (
     <div className="container pt-4 h-75">

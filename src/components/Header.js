@@ -1,10 +1,14 @@
 import React from "react";
-import { NavLink, useLocation } from "react-router-dom";
-
+import { NavLink, useLocation, useNavigate, Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { logOut } from "../redux/action";
 import ROUTES from "../config/routes";
 
 function Header() {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const Token = useSelector((state) => state.Auth.User);
 
   return (
     <header className="shadow">
@@ -52,7 +56,21 @@ function Header() {
               </NavLink>
             </li>
             <li className="ms-2 me-2">
-              <button className="btn bg-primary text-white">Log Out</button>
+              {Token ? (
+                <button
+                  className="btn bg-primary text-white"
+                  onClick={() => {
+                    dispatch(logOut());
+                    window.location.reload();
+                  }}
+                >
+                  Log Out
+                </button>
+              ) : (
+                <Link to={"/Signin"}>
+                  <button className="btn bg-primary text-white">Sign in</button>
+                </Link>
+              )}
             </li>
           </ul>
         </nav>

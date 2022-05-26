@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import UserCard from "../components/UserCard";
 const userInfo = (user) => {
   return axios({
@@ -38,10 +39,14 @@ const fetchData = (amoutOfUsers) => {
 const Dashboard = () => {
   const [amoutOfUsers, SetAmoutOfUsers] = useState(1);
   const [users, setUser] = useState([]);
-
+  const navigate = useNavigate();
+  const Token = useSelector((state) => state.Auth.User);
   useEffect(() => {
+    if (!Token) {
+      navigate("/Signin");
+    }
+
     fetchData(amoutOfUsers).then((res) => {
-      console.log(res);
       res.data.items.forEach((user) => {
         userInfo(user).then((res) => {
           setUser((prev) => {
@@ -58,8 +63,8 @@ const Dashboard = () => {
   return (
     <div className="container ">
       <div className="row ">
-        {users.map((user) => {
-          return <UserCard user={user} key={user.id} />;
+        {users.map((user, i) => {
+          return <UserCard user={user} key={i} />;
         })}
       </div>
       <div className="text-center p-3">

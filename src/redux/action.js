@@ -13,3 +13,16 @@ export const removeUser = (id) => {
     payload: id,
   };
 };
+
+export const userAuth = (user) => {
+  return {
+    type: ActionType.USER__AUTH,
+    payload: user,
+  };
+};
+
+export const logOut = () => {
+  return {
+    type: ActionType.LOG__OUT,
+  };
+};

@@ -1,10 +1,27 @@
-export const initialState = {
-  isLoggedIn: JSON.parse(localStorage.getItem("isLoggedIn")) || false,
-  user: JSON.parse(localStorage.getItem("user")) || null,
-  client_id: process.env.REACT_APP_CLIENT_ID,
-  redirect_uri: process.env.REACT_APP_REDIRECT_URI,
-  client_secret: process.env.REACT_APP_CLIENT_SECRET,
-  proxy_url: process.env.REACT_APP_PROXY_URL,
+import { ActionType } from "../actionType";
+import Cookies from "js-cookie";
+const initilization = {
+  User: Cookies.get("userInfo") ? JSON.parse(Cookies.get("userInfo")) : null,
 };
 
-export const Auth = (state, action) => {};
+export const Authorization = (state = initilization, action) => {
+  switch (action.type) {
+    case ActionType.USER__AUTH: {
+      const newUser = action.payload;
+      console.log(newUser);
+      Cookies.set("userInfo", JSON.stringify(newUser));
+      return { ...state, User: newUser };
+    }
+
+    case ActionType.LOG__OUT: {
+      Cookies.remove("userInfo");
+
+      return {
+        ...state,
+      };
+    }
+    default: {
+      return { ...state };
+    }
+  }
+};
